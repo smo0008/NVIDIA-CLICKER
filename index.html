@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clicker Game with Store</title>
+    <title>0 - Frames</title>
+    <link rel="icon" href="https://icons.iconarchive.com/icons/martz90/circle-addon1/512/nvidia-icon.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -13,6 +14,10 @@
           flex-direction: row;
           justify-content: space-around;
           position: relative;
+          background-color: #1e1e1e;
+          color: #fff;
+          height: 100vh;
+          margin: 0;
         }
 
         #leftPanel, #rightPanel {
@@ -44,7 +49,7 @@
           border: 2px solid #ccc;
           padding: 20px;
           border-radius: 10px;
-          background-color: #f9f9f9;
+          background-color: #2e2e2e;
           position: relative;
         }
 
@@ -101,8 +106,26 @@
           transform: scale(0.9);
         }
 
-        #debugToggle {
+        .particle {
           position: absolute;
+          font-size: 18px;
+          color: #76B900;
+          animation: floatUp 1s ease-in-out forwards;
+        }
+
+        @keyframes floatUp {
+          0% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(-50px);
+          }
+        }
+
+        #debugToggle {
+          position: fixed;
           bottom: 10px;
           left: 10px;
           padding: 5px 10px;
@@ -115,13 +138,13 @@
         }
 
         #godButton {
-          position: absolute;
+          position: fixed;
           bottom: 10px;
           right: 10px;
           padding: 5px 10px;
           font-size: 14px;
           cursor: pointer;
-          background-color: #ff0000;
+          background-color: #0f0f0f;
           color: #fff;
           border: none;
           border-radius: 5px;
@@ -129,14 +152,16 @@
 
         #debugInfo {
           display: none;
-          position: absolute;
-          bottom: 50px; /* Moved to the very bottom */
-          left: 10px; /* Moved to the very left */
+          position: fixed;
+          bottom: 50px; /* Adjust this value to ensure it stays above the debugToggle button */
+          left: 10px;
           padding: 10px;
           font-size: 16px;
           background-color: rgba(0, 0, 0, 0.5);
           color: #fff;
           border-radius: 5px;
+          z-index: 1000;
+          font-family: 'Courier New', Courier, monospace; /* Monospace font for better readability */
         }
     </style>
 </head>
@@ -159,6 +184,12 @@
             </button>
             <span class="oneTimeUpgradePrice" id="oneTimeUpgrade1Price">Cost: 500</span>
         </div>
+        <div>
+            <button class="oneTimeUpgradeButton" id="oneTimeUpgrade2" aria-label="Buy GPU Cluster, doubles the effect of Heatsink #1">GPU Cluster
+                <span class="tooltip">Doubles the effect of Heatsink #1</span>
+            </button>
+            <span class="oneTimeUpgradePrice" id="oneTimeUpgrade2Price">Cost: 5000</span>
+        </div>
         <h3>Regular Upgrades</h3>
         <div>
             <button class="upgradeButton" id="upgrade1" aria-label="Upgrade to GeForce 256, increases frames per second by 0.1">GeForce 256
@@ -166,41 +197,53 @@
             </button>
             <span class="upgradePrice" id="upgrade1Price">Cost: 15</span>
         </div>
-        <div>
-            <button class="upgradeButton" id="upgrade2" aria-label="Upgrade to GeForce2 MX200, increases frames per second by 1">GeForce2 MX200
+        <div id="upgrade2Container" style="display:none;">
+            <button class="upgradeButton" id="upgrade2" aria-label="Upgrade to GeForce Ti4600, increases frames per second by 1">GeForce Ti4600
                 <span class="tooltip">Increases frames per second by 1</span>
             </button>
             <span class="upgradePrice" id="upgrade2Price">Cost: 100</span>
         </div>
-        <div>
-            <button class="upgradeButton" id="upgrade3" aria-label="Upgrade to GeForce3 Ti500, increases frames per second by 10">GeForce3 Ti500
+        <div id="upgrade3Container" style="display:none;">
+            <button class="upgradeButton" id="upgrade3" aria-label="Upgrade to GeForce 7800, increases frames per second by 10">GeForce 7800
                 <span class="tooltip">Increases frames per second by 10</span>
             </button>
             <span class="upgradePrice" id="upgrade3Price">Cost: 1100</span>
         </div>
-        <div>
-            <button class="upgradeButton" id="upgrade4" aria-label="Upgrade to GeForce MX4000, increases frames per second by 50">GeForce MX4000
+        <div id="upgrade4Container" style="display:none;">
+            <button class="upgradeButton" id="upgrade4" aria-label="Upgrade to GeForce 8800 GTS, increases frames per second by 50">GeForce 8800 GTS
                 <span class="tooltip">Increases frames per second by 50</span>
             </button>
             <span class="upgradePrice" id="upgrade4Price">Cost: 12000</span>
         </div>
-        <div>
-            <button class="upgradeButton" id="upgrade5" aria-label="Upgrade to GeForce FX 5600, increases frames per second by 250">GeForce FX 5600
+        <div id="upgrade5Container" style="display:none;">
+            <button class="upgradeButton" id="upgrade5" aria-label="Upgrade to GeForce GTX 670, increases frames per second by 250">GeForce GTX 670
                 <span class="tooltip">Increases frames per second by 250</span>
             </button>
             <span class="upgradePrice" id="upgrade5Price">Cost: 130000</span>
         </div>
-        <div>
-            <button class="upgradeButton" id="upgrade6" aria-label="Upgrade to GeForce 6800, increases frames per second by 1500">GeForce 6800
-                <span class="tooltip">Increases frames per second by 1500</span>
+        <div id="upgrade6Container" style="display:none;">
+            <button class="upgradeButton" id="upgrade6" aria-label="Upgrade to GeForce RTX 2080 Ti, increases frames per second by 1500">GeForce RTX 2080 Ti
+                <span class="tooltip">Increases frames per second by 1.5k</span>
             </button>
             <span class="upgradePrice" id="upgrade6Price">Cost: 14000000</span>
         </div>
-        <div>
-            <button class="upgradeButton" id="upgrade7" aria-label="Upgrade to GeForce GT 520, increases frames per second by 8000">GeForce GT 520
-                <span class="tooltip">Increases frames per second by 8000</span>
+        <div id="upgrade7Container" style="display:none;">
+            <button class="upgradeButton" id="upgrade7" aria-label="Upgrade to GeForce RTX 4090, increases frames per second by 8000">GeForce RTX 4090
+                <span class="tooltip">Increases frames per second by 8k</span>
             </button>
-            <span class="upgradePrice" id="upgrade7Price">Cost: 20M</span>
+            <span class="upgradePrice" id="upgrade7Price">Cost: 20000000</span>
+        </div>
+        <div id="upgrade8Container" style="display:none;">
+            <button class="upgradeButton" id="upgrade8" aria-label="Upgrade to GeForce RTX 5070 Ti, increases frames per second by 40000">GeForce RTX 5070 Ti
+                <span class="tooltip">Increases frames per second by 40k</span>
+            </button>
+            <span class="upgradePrice" id="upgrade8Price">Cost: 330000000</span>
+        </div>
+        <div id="upgrade9Container" style="display:none;">
+            <button class="upgradeButton" id="upgrade9" aria-label="Upgrade to GeForce RTX 6080 SUPER, increases frames per second by 250000">GeForce RTX 6080 SUPER
+                <span class="tooltip">Increases frames per second by 250k</span>
+            </button>
+            <span class="upgradePrice" id="upgrade9Price">Cost: 5100000000</span>
         </div>
     </div>
 </div>
@@ -215,6 +258,11 @@
     <p>Upgrade 5 Bought: <span id="upgrade5Bought">0</span></p>
     <p>Upgrade 6 Bought: <span id="upgrade6Bought">0</span></p>
     <p>Upgrade 7 Bought: <span id="upgrade7Bought">0</span></p>
+    <p>Upgrade 8 Bought: <span id="upgrade8Bought">0</span></p>
+    <p>Upgrade 9 Bought: <span id="upgrade9Bought">0</span></p>
+    <p>Total Frames: <span id="totalFrames">0</span></p>
+    <p>Clicks Per Second: <span id="clicksPerSecond">0.0</span></p>
+    <p>God Mode Active: <span id="godModeActive">No</span></p>
 </div>
 
 <script>
@@ -227,7 +275,10 @@
     var upgrade5Price = 130000;
     var upgrade6Price = 14000000;
     var upgrade7Price = 20000000;
+    var upgrade8Price = 330000000;
+    var upgrade9Price = 5100000000;
     var oneTimeUpgrade1Price = 500;
+    var oneTimeUpgrade2Price = 5000;
     var upgrade1Bought = 0;
     var upgrade2Bought = 0;
     var upgrade3Bought = 0;
@@ -235,8 +286,12 @@
     var upgrade5Bought = 0;
     var upgrade6Bought = 0;
     var upgrade7Bought = 0;
+    var upgrade8Bought = 0;
+    var upgrade9Bought = 0;
     var oneTimeUpgrade1Bought = false;
+    var oneTimeUpgrade2Bought = false;
     var debugVisible = false;
+    var godModeActive = false;
 
     document.getElementById('clicker').addEventListener('click', function() {
       frames++;
@@ -254,19 +309,33 @@
 
     document.getElementById('godButton').addEventListener('click', function() {
       frames *= 2;
+      godModeActive = true;
       updateFrames();
       updateUpgradeButtons();
+      updateDebugInfo();
     });
 
     function updateFrames() {
-      document.getElementById('framesValue').innerText = shortenNumber(frames);
+        const displayFrames = frames > 0 ? shortenNumber(frames) : '0';
+        document.getElementById('framesValue').innerText = displayFrames;
+        document.title = `${displayFrames} Frames - NVIDIA Clicker`;
+        document.getElementById('totalFrames').innerText = displayFrames;
     }
 
     function updateClicksPerSecond() {
-      var baseClicksPerSecond = (upgrade1Bought * 0.1) + (upgrade2Bought * 1) + (upgrade3Bought * 10) + (upgrade4Bought * 50) + (upgrade5Bought * 250) + (upgrade6Bought * 1500) + (upgrade7Bought * 8000);
-      var multiplier = oneTimeUpgrade1Bought ? 1.2 : 1;
+      var baseClicksPerSecond = (upgrade1Bought * 0.1) + (upgrade2Bought * 1) + (upgrade3Bought * 10) + (upgrade4Bought * 50) + (upgrade5Bought * 250) + (upgrade6Bought * 1500) + (upgrade7Bought * 8000) + (upgrade8Bought * 40000) + (upgrade9Bought * 250000);
+      var multiplier = 1;
+      if (oneTimeUpgrade1Bought) {
+        multiplier *= 1.2;
+      }
+      if (oneTimeUpgrade2Bought) {
+        multiplier *= 2;
+        document.querySelector('#oneTimeUpgrade1 .tooltip').innerText = "Improves frames per second by 40%";
+      }
       clicksPerSecond = baseClicksPerSecond * multiplier;
-      document.getElementById('fps').innerText = clicksPerSecond.toFixed(1);
+      const displayClicksPerSecond = clicksPerSecond > 0 ? shortenNumber(clicksPerSecond) : '0';
+      document.getElementById('fps').innerText = displayClicksPerSecond;
+      document.getElementById('clicksPerSecond').innerText = displayClicksPerSecond;
     }
 
     function increasePrice(price) {
@@ -274,19 +343,18 @@
     }
 
     function shortenNumber(num) {
-      if (num >= 1e9) {
-        return (num / 1e9).toFixed(1) + 'B';
-      } else if (num >= 1e6) {
-        return (num / 1e6).toFixed(1) + 'M';
-      } else if (num >= 1e3) {
-        return (num / 1e3).toFixed(1) + 'k';
-      } else {
-        return num.toFixed(0);
+      const units = ["", "k", "M", "B", "T", "Qa", "Qi", "Sx", "Sp", "Oc", "No", "Dc", "Ud", "Dd", "Td", "Qad", "Qid", "Sxd", "Spd", "Ocd"];
+      let unitIndex = 0;
+      while (num >= 1000 && unitIndex < units.length - 1) {
+        num /= 1000;
+        unitIndex++;
       }
+      return num.toFixed(1) + units[unitIndex];
     }
 
     function updateUpgradeButtons() {
       updateButtonState('oneTimeUpgrade1', oneTimeUpgrade1Price);
+      updateButtonState('oneTimeUpgrade2', oneTimeUpgrade2Price);
       updateButtonState('upgrade1', upgrade1Price);
       updateButtonState('upgrade2', upgrade2Price);
       updateButtonState('upgrade3', upgrade3Price);
@@ -294,6 +362,8 @@
       updateButtonState('upgrade5', upgrade5Price);
       updateButtonState('upgrade6', upgrade6Price);
       updateButtonState('upgrade7', upgrade7Price);
+      updateButtonState('upgrade8', upgrade8Price);
+      updateButtonState('upgrade9', upgrade9Price);
     }
 
     function updateButtonState(buttonId, price) {
@@ -304,6 +374,12 @@
         button.disabled = false;
       } else {
         button.disabled = true;
+      }
+    }
+
+    function revealNextUpgrade(currentUpgradeId, nextUpgradeContainerId) {
+      if (document.getElementById(currentUpgradeId).style.display !== 'none') {
+        document.getElementById(nextUpgradeContainerId).style.display = 'block';
       }
     }
 
@@ -320,6 +396,20 @@
       }
     });
 
+    document.getElementById('oneTimeUpgrade2').addEventListener('click', function() {
+      if (frames >= oneTimeUpgrade2Price) {
+        frames -= oneTimeUpgrade2Price;
+        oneTimeUpgrade2Bought = true;
+        updateFrames();
+        updateClicksPerSecond();
+        document.getElementById('oneTimeUpgrade2').style.display = 'none';
+        document.getElementById('oneTimeUpgrade2Price').style.display = 'none';
+      } else {
+        alert("Not enough frames to purchase this upgrade!");
+      }
+
+    });
+
     document.getElementById('upgrade1').addEventListener('click', function() {
       if (frames >= upgrade1Price) {
         upgrade1Bought++;
@@ -330,6 +420,7 @@
         document.getElementById('upgrade1Price').innerText = "Cost: " + shortenNumber(upgrade1Price);
         document.getElementById('upgrade1Bought').innerText = upgrade1Bought;
         updateUpgradeButtons();
+        revealNextUpgrade('upgrade1', 'upgrade2Container');
       } else {
         alert("Not enough frames to purchase this upgrade!");
       }
@@ -345,6 +436,7 @@
         document.getElementById('upgrade2Price').innerText = "Cost: " + shortenNumber(upgrade2Price);
         document.getElementById('upgrade2Bought').innerText = upgrade2Bought;
         updateUpgradeButtons();
+        revealNextUpgrade('upgrade2', 'upgrade3Container');
       } else {
         alert("Not enough frames to purchase this upgrade!");
       }
@@ -360,6 +452,7 @@
         document.getElementById('upgrade3Price').innerText = "Cost: " + shortenNumber(upgrade3Price);
         document.getElementById('upgrade3Bought').innerText = upgrade3Bought;
         updateUpgradeButtons();
+        revealNextUpgrade('upgrade3', 'upgrade4Container');
       } else {
         alert("Not enough frames to purchase this upgrade!");
       }
@@ -375,6 +468,7 @@
         document.getElementById('upgrade4Price').innerText = "Cost: " + shortenNumber(upgrade4Price);
         document.getElementById('upgrade4Bought').innerText = upgrade4Bought;
         updateUpgradeButtons();
+        revealNextUpgrade('upgrade4', 'upgrade5Container');
       } else {
         alert("Not enough frames to purchase this upgrade!");
       }
@@ -390,6 +484,7 @@
         document.getElementById('upgrade5Price').innerText = "Cost: " + shortenNumber(upgrade5Price);
         document.getElementById('upgrade5Bought').innerText = upgrade5Bought;
         updateUpgradeButtons();
+        revealNextUpgrade('upgrade5', 'upgrade6Container');
       } else {
         alert("Not enough frames to purchase this upgrade!");
       }
@@ -405,6 +500,7 @@
         document.getElementById('upgrade6Price').innerText = "Cost: " + shortenNumber(upgrade6Price);
         document.getElementById('upgrade6Bought').innerText = upgrade6Bought;
         updateUpgradeButtons();
+        revealNextUpgrade('upgrade6', 'upgrade7Container');
       } else {
         alert("Not enough frames to purchase this upgrade!");
       }
@@ -419,6 +515,38 @@
         updateClicksPerSecond();
         document.getElementById('upgrade7Price').innerText = "Cost: " + shortenNumber(upgrade7Price);
         document.getElementById('upgrade7Bought').innerText = upgrade7Bought;
+        updateUpgradeButtons();
+        revealNextUpgrade('upgrade7', 'upgrade8Container');
+      } else {
+        alert("Not enough frames to purchase this upgrade!");
+      }
+    });
+
+    document.getElementById('upgrade8').addEventListener('click', function() {
+      if (frames >= upgrade8Price) {
+        upgrade8Bought++;
+        frames -= upgrade8Price;
+        upgrade8Price = increasePrice(upgrade8Price);
+        updateFrames();
+        updateClicksPerSecond();
+        document.getElementById('upgrade8Price').innerText = "Cost: " + shortenNumber(upgrade8Price);
+        document.getElementById('upgrade8Bought').innerText = upgrade8Bought;
+        updateUpgradeButtons();
+        revealNextUpgrade('upgrade8', 'upgrade9Container');
+      } else {
+        alert("Not enough frames to purchase this upgrade!");
+      }
+    });
+
+    document.getElementById('upgrade9').addEventListener('click', function() {
+      if (frames >= upgrade9Price) {
+        upgrade9Bought++;
+        frames -= upgrade9Price;
+        upgrade9Price = increasePrice(upgrade9Price);
+        updateFrames();
+        updateClicksPerSecond();
+        document.getElementById('upgrade9Price').innerText = "Cost: " + shortenNumber(upgrade9Price);
+        document.getElementById('upgrade9Bought').innerText = upgrade9Bought;
         updateUpgradeButtons();
       } else {
         alert("Not enough frames to purchase this upgrade!");
