@@ -1,4 +1,4 @@
-# My Web Game
+# NVIDIA Clicker Web Game
 
 This is a browser game made with HTML, CSS, and JavaScript.
 
@@ -11,4 +11,4 @@ This is a browser game made with HTML, CSS, and JavaScript.
 Clone the repo or open the link above.
 
 ```bash
-git clone https://github.com/yourusername/your-repo-name.git
+git clone https://github.com/smo0008/NVIDIA-CLICKER.git
